@@ -1,9 +1,9 @@
 # Hotspot-Android
 [![](https://jitpack.io/v/Knexis/Hotspot-Android.svg)](https://jitpack.io/#Knexis/Hotspot-Android)
 
-An simple Android hotspot utility library.
+An simple Android hotspot utility library as inspired by Nick Russler's [Android-Wifi-Hotspot-Manager-Class](https://github.com/nickrussler/Android-Wifi-Hotspot-Manager-Class)
 
-##Prerequisite
+## Prerequisite
 
 Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
 
