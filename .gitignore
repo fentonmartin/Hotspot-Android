@@ -1,5 +1,5 @@
 *.iml
-.gradle
+#.gradle
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -11,4 +11,4 @@
 /gradle.properties
 /gradlew
 /gradlew.bat
-/.gradle/
+#/.gradle/
