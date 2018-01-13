@@ -37,10 +37,15 @@ public class Hotspot {
 
     private final WifiManager mWifiManager;
     private Context context;
+    private HotspotListener listener;
 
     public Hotspot(Context context) {
         this.context = context;
         mWifiManager = (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
+    }
+
+    public void setListener(HotspotListener listener){
+        this.listener = listener;
     }
 
     public void start(){
@@ -72,16 +77,24 @@ public class Hotspot {
                     Method method = mWifiManager.getClass().getMethod("setWifiApEnabled",WifiConfiguration.class,boolean.class);
                     method.invoke(mWifiManager,configuration, enabled);
                     mWifiManager.saveConfiguration();
+
+                    if(listener != null)
+                        listener.OnHotspotStartSuccessful();
                 }
-                catch (Exception e)
-                {
-                    e.getMessage();
+                catch (Exception e) {
+                    onHotspotStartFailed(e.getMessage());
                 }
             }
 
         } catch (Exception e) {
             Log.e(this.getClass().toString(), "", e);
+            onHotspotStartFailed(e.getMessage());
         }
+    }
+
+    private void onHotspotStartFailed(String error){
+        if(listener != null)
+            listener.OnHotspotStartFailed(error);
     }
 
     public boolean isON(){
@@ -123,10 +136,9 @@ public class Hotspot {
      * Gets a list of the clients connected to the Hotspot, reachable timeout is 300
      *
      * @param onlyReachables  {@code false} if the list should contain unreachable (probably disconnected) clients, {@code true} otherwise
-     * @param listener, Interface called when the scan method finishes
      */
-    public void getClientList(boolean onlyReachables, OnConnectedDevicesRetrievedListener listener) {
-        getClientList(onlyReachables, 300, listener);
+    public void getClientList(boolean onlyReachables) {
+        getClientList(onlyReachables, 300);
     }
 
     /**
@@ -134,9 +146,8 @@ public class Hotspot {
      *
      * @param onlyReachables   {@code false} if the list should contain unreachable (probably disconnected) clients, {@code true} otherwise
      * @param reachableTimeout Reachable Timout in miliseconds
-     * @param finishListener,  Interface called when the scan method finishes
      */
-    private void getClientList(final boolean onlyReachables, final int reachableTimeout, final OnConnectedDevicesRetrievedListener finishListener) {
+    public void getClientList(final boolean onlyReachables, final int reachableTimeout) {
         Runnable runnable = new Runnable() {
             public void run() {
 
@@ -177,7 +188,8 @@ public class Hotspot {
                 Runnable myRunnable = new Runnable() {
                     @Override
                     public void run() {
-                        finishListener.OnDevicesConnectedRetrieved(result);
+                        if(listener != null)
+                           listener.OnDevicesConnectedRetrieved(result);
                     }
                 };
                 mainHandler.post(myRunnable);

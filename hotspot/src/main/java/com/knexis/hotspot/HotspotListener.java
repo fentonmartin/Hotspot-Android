@@ -7,10 +7,14 @@ import java.util.ArrayList;
  * Purpose:
  */
 
-public interface OnConnectedDevicesRetrievedListener {
+public interface HotspotListener {
 	/**
 	 * Interface called when the scan method finishes. Network operations should not execute on UI thread
 	 * @param clients
 	 */
-	public void OnDevicesConnectedRetrieved(ArrayList<ConnectedDevice> clients);
+	void OnDevicesConnectedRetrieved(ArrayList<ConnectedDevice> clients);
+
+	void OnHotspotStartSuccessful();
+
+	void OnHotspotStartFailed(String error);
 }
