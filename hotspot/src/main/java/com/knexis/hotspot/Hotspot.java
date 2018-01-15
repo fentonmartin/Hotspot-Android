@@ -79,7 +79,7 @@ public class Hotspot {
                     mWifiManager.saveConfiguration();
 
                     if(listener != null)
-                        listener.OnHotspotStartSuccessful();
+                        listener.OnHotspotStartResult(new ConnectionResult(null,true));
                 }
                 catch (Exception e) {
                     onHotspotStartFailed(e.getMessage());
@@ -94,7 +94,7 @@ public class Hotspot {
 
     private void onHotspotStartFailed(String error){
         if(listener != null)
-            listener.OnHotspotStartFailed(error);
+            listener.OnHotspotStartResult(new ConnectionResult(error, false));
     }
 
     public boolean isON(){

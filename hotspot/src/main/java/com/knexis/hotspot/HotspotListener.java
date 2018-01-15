@@ -14,7 +14,5 @@ public interface HotspotListener {
 	 */
 	void OnDevicesConnectedRetrieved(ArrayList<ConnectedDevice> clients);
 
-	void OnHotspotStartSuccessful();
-
-	void OnHotspotStartFailed(String error);
+	void OnHotspotStartResult(ConnectionResult result);
 }
