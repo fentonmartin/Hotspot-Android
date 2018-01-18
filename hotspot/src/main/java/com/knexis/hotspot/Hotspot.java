@@ -71,19 +71,16 @@ public class Hotspot {
                 mWifiManager.setWifiEnabled(false);
             }
 
-            if(!this.isON())
-            {
-                try{
-                    Method method = mWifiManager.getClass().getMethod("setWifiApEnabled",WifiConfiguration.class,boolean.class);
-                    method.invoke(mWifiManager,configuration, enabled);
-                    mWifiManager.saveConfiguration();
+            try{
+                Method method = mWifiManager.getClass().getMethod("setWifiApEnabled",WifiConfiguration.class,boolean.class);
+                method.invoke(mWifiManager, configuration, enabled);
+                mWifiManager.saveConfiguration();
 
-                    if(listener != null)
-                        listener.OnHotspotStartResult(new ConnectionResult(null,true));
-                }
-                catch (Exception e) {
-                    onHotspotStartFailed(e.getMessage());
-                }
+                if(listener != null)
+                    listener.OnHotspotStartResult(new ConnectionResult(null,true));
+            }
+            catch (Exception e) {
+                onHotspotStartFailed(e.getMessage());
             }
 
         } catch (Exception e) {
