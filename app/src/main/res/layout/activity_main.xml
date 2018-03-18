@@ -25,4 +25,36 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="74dp"
         android:text="Turn off Hotspot" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="73dp"
+        android:text="Number of devices connected"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_devices_connected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <Button
+        android:onClick="onRefreshDevicesConnected"
+        android:id="@+id/btn_refresh_devices_connected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_devices_connected"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Refresh count" />
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Nana Kwame Nyantakyi on 11/01/2018.
@@ -35,17 +37,75 @@ import java.util.ArrayList;
 
 public class Hotspot {
 
+    private final int REFRESH_TIME = 1;
+
     private final WifiManager mWifiManager;
     private Context context;
     private HotspotListener listener;
+    private CountDownTimer timer;
+
+    private boolean isRefreshReady = true;
 
     public Hotspot(Context context) {
         this.context = context;
         mWifiManager = (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
     }
 
+    /**Use startListener({@link HotspotListener})
+     * or
+     * startListener({@link HotspotListener}, refreshTimeOut in seconds) where timer is set to last for an hour (1hr)
+     * or
+     * startListener({@link HotspotListener}, {@link CountDownTimer}) You can pass your own CounterDownTimer with your preferred timer settings then I .start() it for you.
+     * **/
+    @Deprecated
     public void setListener(HotspotListener listener){
         this.listener = listener;
+    }
+
+    public void startListener(HotspotListener listener){
+        startListener(listener, null);
+    }
+
+    public void startListener(final HotspotListener listener, long refreshTimeOutInSeconds){
+
+        startListener(listener, new CountDownTimer(TimeUnit.HOURS.toMillis(REFRESH_TIME),
+                TimeUnit.SECONDS.toMillis(refreshTimeOutInSeconds)) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                onTimerTick();
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+
+    }
+
+    public void startListener(HotspotListener listener, CountDownTimer countDownTimer){
+        this.listener = listener;
+        this.timer    = countDownTimer;
+
+        if(timer != null)
+            timer.start();
+    }
+
+    public void stopListener(){
+        if(timer != null)
+            timer.cancel();
+    }
+
+    public void onTimerTick(){
+
+         if(listener != null)
+             Hotspot.this.getClientList(true);
+         else{
+             if(timer != null)
+                 timer.cancel();
+         }
+
     }
 
     public void start(){
@@ -63,6 +123,7 @@ public class Hotspot {
 
     public void stop(){
         enabled(false, null);
+        stopListener();
     }
 
     private void enabled(boolean enabled, WifiConfiguration configuration) {
@@ -145,6 +206,11 @@ public class Hotspot {
      * @param reachableTimeout Reachable Timout in miliseconds
      */
     public void getClientList(final boolean onlyReachables, final int reachableTimeout) {
+
+        if(isRefreshReady){
+
+        isRefreshReady = false;
+
         Runnable runnable = new Runnable() {
             public void run() {
 
@@ -152,7 +218,7 @@ public class Hotspot {
                 final ArrayList<ConnectedDevice> result = new ArrayList<ConnectedDevice>();
 
                 try {
-                    br = new BufferedReader(new FileReader("/proc/net/arp"));
+                    br = new BufferedReader(new FileReader("/proc/net/arp"), 1024);
                     String line;
                     while ((line = br.readLine()) != null) {
                         String[] splitted = line.split(" +");
@@ -187,6 +253,7 @@ public class Hotspot {
                     public void run() {
                         if(listener != null)
                            listener.OnDevicesConnectedRetrieved(result);
+                        isRefreshReady = true;
                     }
                 };
                 mainHandler.post(myRunnable);
@@ -195,6 +262,7 @@ public class Hotspot {
 
         Thread mythread = new Thread(runnable);
         mythread.start();
+        }
     }
 
 }
