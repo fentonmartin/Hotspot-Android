@@ -1,4 +1,5 @@
 # Hotspot-Android
+[![HitCount](http://hits.dwyl.io/knexis/Hotspot-Android.svg)](http://hits.dwyl.io/knexis/Hotspot-Android)
 [![](https://jitpack.io/v/Knexis/Hotspot-Android.svg)](https://jitpack.io/#Knexis/Hotspot-Android)
 
 An simple Android hotspot utility library as inspired by Nick Russler's [Android-Wifi-Hotspot-Manager-Class](https://github.com/nickrussler/Android-Wifi-Hotspot-Manager-Class)
